@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class BalllController : MonoBehaviour
@@ -6,24 +7,22 @@ public class BalllController : MonoBehaviour
     [SerializeField] private Rigidbody sphereRigidbody;
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private InputManager inputManager;
+    [SerializeField] Transform ballTransform;
     [SerializeField] Transform cameraTransform;
     [Header("Movement Settings")]
     [SerializeField] private float ballSpeed = 3f;
+    [SerializeField] private float ballDrag = 1f;
     [SerializeField] private float jumpForce = 20f;
     [SerializeField] private float gravityMuliplier = 0.5f;
-    [SerializeField] private float dashForce = 2.0f;
-    [SerializeField] private float dashDuration = 0.1f;
 
     private Boolean onGround = false;
     private int jumpCount = 0;
-    private Boolean isDashing = false;
-    public float dashCooldown = 3.0f;
     float cooldownEndTime = 0f;
 
     private void Start()
     {
         inputManager.jumpInput.AddListener(jump);
-
+        sphereRigidbody.linearDamping = ballDrag;
     }
     public void MoveBall(Vector3 input)
     {
@@ -35,20 +34,11 @@ public class BalllController : MonoBehaviour
         cameraRight.Normalize();
 
         Vector3 inputXZPlane = (cameraForward * input.z + cameraRight * input.x).normalized;
-        Vector3 inputXYZPlane = new(inputXZPlane.x, 0, inputXZPlane.z);
+        Vector3 inputXYZPlane = new(inputXZPlane.x * ballSpeed/5, 0, inputXZPlane.z * ballSpeed/5);
 
+        ballTransform.rotation = cameraTransform.rotation;
         sphereRigidbody.AddForce(inputXYZPlane * ballSpeed);
         sphereRigidbody.AddForce(Physics.gravity * (sphereRigidbody.mass*gravityMuliplier));
-    }
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.LeftShift))
-        {
-            if (Time.time >= cooldownEndTime)
-            {
-                cooldownEndTime = Time.time + dashCooldown;   
-            }
-        }
     }
     public void jump()
     {
@@ -59,27 +49,6 @@ public class BalllController : MonoBehaviour
             Debug.Log(jumpCount);
         }
     }
-
-    private void StartDash()
-    {
-        isDashing = true;
-
-        Vector3 dashDirection = cameraTransform.forward;
-        dashDirection.y = 0;
-        dashDirection.Normalize();
-
-        sphereRigidbody.linearVelocity = Vector3.zero;
-        sphereRigidbody.AddForce(dashDirection * dashForce, ForceMode.Impulse);
-
-        Debug.Log("Dashing in direction: " + dashDirection);
-
-        Invoke(nameof(EndDash), dashDuration);
-}
-
-private void EndDash()
-{
-    isDashing = false;
-}
 
 //detecting if the ball is on the ground or has hit a wall
 public void OnCollisionEnter(Collision collision)

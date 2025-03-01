@@ -6,7 +6,6 @@ public class InputManager : MonoBehaviour
 {
     public UnityEvent<Vector3> OnMove = new UnityEvent<Vector3>();
     public UnityEvent jumpInput = new UnityEvent();
-    public UnityEvent dashInput = new UnityEvent();
     void Update()
     {
         Vector3 inputVector = Vector3.zero;
@@ -25,14 +24,11 @@ public class InputManager : MonoBehaviour
         if (Input.GetKey(KeyCode.D))
         {
             inputVector += Vector3.right;
+            Debug.Log("D pressed");
         }
         if (Input.GetKeyDown(KeyCode.Space))
         {
             jumpInput?.Invoke();
-        }
-        if (Input.GetKeyDown(KeyCode.LeftShift))
-        {
-            dashInput?.Invoke();
         }
         OnMove?.Invoke(inputVector);
     }
