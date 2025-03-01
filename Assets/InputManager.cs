@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -10,7 +11,6 @@ public class InputManager : MonoBehaviour
         if (Input.GetKey(KeyCode.W))
         {
             inputVector += Vector3.forward;
-            Debug.Log("W pressed");
         }
         if (Input.GetKey(KeyCode.S))
         {

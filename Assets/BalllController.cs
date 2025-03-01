@@ -1,5 +1,4 @@
 using System;
-using TMPro;
 using UnityEngine;
 
 public class BalllController : MonoBehaviour
@@ -9,18 +8,27 @@ public class BalllController : MonoBehaviour
     [SerializeField] private float ballSpeed = 3f;
     [SerializeField] private float jumpForce = 20f;
     [SerializeField] private float gravityMuliplier = 0.5f;
+    [SerializeField] Transform cameraTransform;
     private Boolean onGround = false;
 
     public void MoveBall(Vector3 input)
     {
-        Vector3 inputXYZPlane = new(input.x, input.y*jumpForce, input.z);
+        Vector3 cameraForward = cameraTransform.forward;
+        Vector3 cameraRight = cameraTransform.right;
+        cameraForward.y = 0;
+        cameraRight.y = 0;
+        cameraForward.Normalize();
+        cameraRight.Normalize();
+
+        Vector3 inputXZPlane = (cameraForward * input.z + cameraRight * input.x).normalized;
         Debug.Log(input.y);
-        
+        Vector3 inputXYZPlane = new(inputXZPlane.x, input.y * jumpForce, inputXZPlane.z);
+
         if (onGround == false)
         {
             inputXYZPlane.y = 0;
         }
-        
+
         Debug.Log("Resultant vector:" + inputXYZPlane);
         sphereRigidbody.AddForce(inputXYZPlane * ballSpeed);
         sphereRigidbody.AddForce(Physics.gravity * (sphereRigidbody.mass*gravityMuliplier));
