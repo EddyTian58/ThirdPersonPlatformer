@@ -8,20 +8,21 @@ public class CookieController : MonoBehaviour
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private GameObject cookie;
     public UnityEvent cookieCollected = new();
-    public bool isCookieCollected = false;
+    public int timesHit = 0;
 
     private void OnTriggerEnter(Collider triggeredObject)
     {
-        Debug.Log("Trigger entered by: " + triggeredObject.name);
-        isCookieCollected = true;
-        audioSource.Play();
-        cookieCollected?.Invoke();
-        Debug.Log("Cookie collected!");
-
-        StartCoroutine(DeactivateCookieAfterAudio());
+        timesHit++;
+        if (timesHit == 1)
+        {
+            audioSource.Play();
+            StartCoroutine(DeactivateCookieAfterAudio());
+            Debug.Log("Cookie collected!");
+        }
     }
     private IEnumerator DeactivateCookieAfterAudio()
     {
+        cookieCollected?.Invoke();
         yield return new WaitForSeconds(audioSource.clip.length);
         cookie.SetActive(false);
     }
