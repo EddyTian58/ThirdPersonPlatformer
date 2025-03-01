@@ -5,7 +5,7 @@ using UnityEngine.SocialPlatforms.Impl;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private float score = 0;
+    [SerializeField] private int score = 0;
     [SerializeField] private TextMeshProUGUI scoreText;
     private CookieController[] cookies;
 

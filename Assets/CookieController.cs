@@ -3,8 +3,9 @@ using UnityEngine.Events;
 
 public class CookieController : MonoBehaviour
 {
-    [SerializeField] Transform cookieTransform;
-    [SerializeField] GameObject cookie;
+    [SerializeField] private Transform cookieTransform;
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private GameObject cookie;
     public UnityEvent cookieCollected = new();
     public bool isCookieCollected = false;
 
@@ -12,6 +13,7 @@ public class CookieController : MonoBehaviour
     {
         isCookieCollected = true;
         cookieCollected?.Invoke();
+        audioSource.Play();
         cookie.SetActive(false);
         Debug.Log("Cookie collected!");
     }
