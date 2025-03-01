@@ -21,15 +21,12 @@ public class BalllController : MonoBehaviour
         cameraRight.Normalize();
 
         Vector3 inputXZPlane = (cameraForward * input.z + cameraRight * input.x).normalized;
-        Debug.Log(input.y);
         Vector3 inputXYZPlane = new(inputXZPlane.x, input.y * jumpForce, inputXZPlane.z);
-
         if (onGround == false)
         {
             inputXYZPlane.y = 0;
         }
 
-        Debug.Log("Resultant vector:" + inputXYZPlane);
         sphereRigidbody.AddForce(inputXYZPlane * ballSpeed);
         sphereRigidbody.AddForce(Physics.gravity * (sphereRigidbody.mass*gravityMuliplier));
     }
